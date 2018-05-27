@@ -2,12 +2,11 @@ import * as React from 'react'
 import { ComponentClass } from 'react'
 import { Subscription } from 'rxjs'
 import { Store, StoreDefinition, StoreSnapshot } from './'
-import { equals, getDisplayName } from './utils'
+import { equals, getDisplayName, Omit } from './utils'
 
-export type Diff<T extends string, U extends string> = ({ [P in T]: P } & { [P in U]: never } & { [x: string]: never })[T]
-export type Omit<T, K extends keyof T> = { [P in Diff<keyof T, K>]: T[P] }
-
-export function connect<Actions extends object>(store: StoreDefinition<Actions>) {
+export function connect<Actions extends object>(
+  store: StoreDefinition<Actions> | Omit<StoreDefinition<Actions>, 'set'>
+) {
   return function <
     Props,
     PropsWithStore extends { store: Store<Actions> } & Props = { store: Store<Actions> } & Props
@@ -23,12 +22,12 @@ export function connect<Actions extends object>(store: StoreDefinition<Actions>)
     return class extends React.Component<Omit<PropsWithStore, 'store'>, State> {
       static displayName = `withStore(${getDisplayName(Component)})`
       state = {
-        store: store['store'],
-        subscription: store.onAll().subscribe(({ key, previousValue, value }) => {
+        store: (store as StoreDefinition<Actions>)['store'],
+        subscription: (store as StoreDefinition<Actions>).onAll().subscribe(({ key, previousValue, value }) => {
           if (equals(previousValue, value)) {
             return false
           }
-          this.setState({ store: store['store'] })
+          this.setState({ store: (store as StoreDefinition<Actions>)['store'] })
         })
       }
       componentWillUnmount() {

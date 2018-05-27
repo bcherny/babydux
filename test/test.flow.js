@@ -1,6 +1,6 @@
 // @flow
-import { connect, createStore, withLogger, withReduxDevtools } from '../dist/src'
-import type { Plugin, Store } from '../dist/src'
+import { connect, createStore, createSafeStore, withLogger, withReduxDevtools } from '../dist/src'
+import type { Plugin, SafePlugin, Store } from '../dist/src'
 import * as React from 'react'
 import { debounceTime, filter } from 'rxjs/operators'
 
@@ -25,7 +25,10 @@ let withEffects: Plugin<State> = store => {
       value.slice(0, 1)
     }
   })
-  store.on('users').subscribe(_ => _.slice(0, 1))
+  store.on('users').subscribe(_ => {
+    _.slice(0, 1)
+    store.set('isTrue')(!store.get('isTrue'))
+  })
   return store
 }
 
@@ -119,3 +122,34 @@ store.onAll().subscribe(_ => {
   _.previousValue === false
   _.value === true
 })
+
+/////////////////// SafePlugin ///////////////////
+
+let withSafeEffects: SafePlugin<State> = store => {
+  store.onAll().subscribe(({ key, value, previousValue }) => {
+    key.toUpperCase()
+    if (typeof previousValue === 'boolean' || typeof value === 'boolean') {
+      !previousValue
+      !value
+    } else {
+      previousValue.slice(0, 1)
+      value.slice(0, 1)
+    }
+  })
+  store.on('users').subscribe(_ => _.slice(0, 1))
+  return store
+}
+
+let safeStore = withSafeEffects(createSafeStore(initialState))
+
+let S = connect(safeStore)(class extends React.Component<PropsWithStore> {
+  render() {
+    return <div>
+      {this.props.store.get('isTrue') ? 'True' : 'False'}
+      {this.props.foo}
+      {this.props.bar}
+      <button onClick={this.props.store.set('isTrue')(true)} />
+    </div>
+  }
+})
+let s = <S foo={1} bar='baz' />

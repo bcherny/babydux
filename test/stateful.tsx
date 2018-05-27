@@ -89,7 +89,7 @@ test('[stateful] it should call .on().subscribe() with the current value', t =>
   })
 )
 
-test('[statelful] it should call .onAll().subscribe() with the key, current value, and previous value', t =>
+test('[stateful] it should call .onAll().subscribe() with the key, current value, and previous value', t =>
   withElement(MyComponentWithLens, _ => {
     t.plan(3)
     store.onAll().subscribe(_ => {

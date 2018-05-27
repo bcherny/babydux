@@ -6,18 +6,21 @@ export type Undux<Actions: Object> = $ObjMap<Actions, Lift<Actions>>
 
 type Lift<Actions: Object> = <V>(value: V) => Lifted<Actions, V>
 
-type Lifted<Actions, T> = {
+type Lifted<Actions, T> = {|
   key: $Keys<Actions>,
   previousValue: T,
   value: T
-}
+|}
 
-export interface Store<Actions: Object> {
+export interface SafeStore<Actions: Object> {
   get<K: $Keys<Actions>>(key: K): $ElementType<Actions, K>;
-  set<K: $Keys<Actions>>(key: K): (value: $ElementType<Actions, K>) => void;
   on<K: $Keys<Actions>>(key: K): Observable<$ElementType<Actions, K>>;
   onAll(): Observable<$Values<Undux<Actions>>>;
   getState(): $ReadOnly<Actions>;
+}
+
+export interface Store<Actions: Object> extends SafeStore<Actions> {
+  set<K: $Keys<Actions>>(key: K): (value: $ElementType<Actions, K>) => void;
 }
 
 declare export class StoreSnapshot<Actions: Object> implements Store<Actions> {
@@ -36,13 +39,29 @@ declare export class StoreDefinition<Actions: Object> implements Store<Actions> 
   getState(): $ReadOnly<Actions>;
 }
 
+declare export class SafeStoreDefinition<Actions: Object> implements SafeStore<Actions> {
+  get<K: $Keys<Actions>>(key: K): $ElementType<Actions, K>;
+  on<K: $Keys<Actions>>(key: K): Observable<$ElementType<Actions, K>>;
+  onAll(): Observable<$Values<Undux<Actions>>>;
+  getState(): $ReadOnly<Actions>;
+}
+
 declare export function createStore<Actions: Object>(initialState: Actions): StoreDefinition<Actions>
-export type Plugin<Actions: Object> = (store: StoreDefinition<Actions>) => StoreDefinition<Actions>
+
+declare export function createSafeStore<Actions: Object>(initialState: Actions): SafeStoreDefinition<Actions>
+
+export type Plugin<Actions: Object> = (
+  store: StoreDefinition<Actions>
+) => StoreDefinition<Actions>
+
+export type SafePlugin<Actions: Object> = (
+  store: SafeStoreDefinition<Actions>
+) => SafeStoreDefinition<Actions>
 declare export var withLogger: Plugin<Object>
 declare export var withReduxDevtools: Plugin<Object>
 
 declare export function connect<Actions: Object>(
-  store: StoreDefinition<Actions>
+  store: StoreDefinition<Actions> | SafeStoreDefinition<Actions>
 ): <Props: {store: Store<Actions>}>(
   Component: React.ComponentType<Props>
 ) =>

@@ -1,3 +1,4 @@
+import './effects'
 import './immutable'
 import './stateful'
 import './stateless'

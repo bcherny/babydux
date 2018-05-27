@@ -33,7 +33,7 @@
     "@types/react-dom": "^16.0.5",
     "ava": "^0.25.0",
     "concurrently": "^3.5.1",
-    "flow-bin": "^0.72.0",
+    "flow-bin": "^0.73.0",
     "immutable": "^3.8.2",
     "jsdom": "^11.10.0",
     "prettier": "^1.12.1",
