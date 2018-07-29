@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { Subscription } from 'rxjs'
 import { createStore, Effect, Store, StoreDefinition, StoreSnapshot } from '..'
+import { Subscription } from '../emitter'
 import { Diff, getDisplayName } from '../utils'
 
 export type Connect<State extends object> = {

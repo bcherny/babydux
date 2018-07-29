@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { Subscription } from 'rxjs'
 import { createStore, EffectAs, Store, StoreDefinition, StoreSnapshot } from '..'
+import { Subscription } from '../emitter'
 import { Diff, getDisplayName, mapValues } from '../utils'
 
 export type ConnectAs<States extends {

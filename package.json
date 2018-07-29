@@ -24,9 +24,7 @@
     "tdd": "concurrently -k \"tsc -w\" \"ava -w\"",
     "test": "ava && flow focus-check ./test/test.flow.js && ./test/bad-cases/run.sh"
   },
-  "dependencies": {
-    "typed-rx-emitter": "^1.1.4"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/jsdom": "^11.0.6",
     "@types/react": "^16.4.7",

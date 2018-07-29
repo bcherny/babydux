@@ -1,5 +1,4 @@
-import * as RxJS from 'rxjs'
-import { Emitter } from 'typed-rx-emitter'
+import { Emitter, Observable } from './emitter'
 import { mapValues } from './utils'
 
 const CYCLE_ERROR_MESSAGE = '[undux] Error: Cyclical dependency detected. '
@@ -81,10 +80,10 @@ export class StoreDefinition<State extends object> implements Store<State> {
       }
     )
   }
-  on<K extends keyof State>(key: K): RxJS.Observable<State[K]> {
+  on<K extends keyof State>(key: K): Observable<State[K]> {
     return this.emitter.on(key)
   }
-  onAll(): RxJS.Observable<Undux<State>[keyof State]> {
+  onAll(): Observable<Undux<State>[keyof State]> {
     return this.alls.all()
   }
   get<K extends keyof State>(key: K) {
