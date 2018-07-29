@@ -24,18 +24,16 @@
     "tdd": "concurrently -k \"tsc -w\" \"ava -w\"",
     "test": "ava && flow focus-check ./test/test.flow.js && ./test/bad-cases/run.sh"
   },
-  "dependencies": {
-    "typed-rx-emitter": "^1.1.2"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/jsdom": "^11.0.6",
-    "@types/react": "^16.4.6",
+    "@types/react": "^16.4.7",
     "@types/react-dom": "^16.0.6",
     "ava": "^0.25.0",
-    "concurrently": "^3.6.0",
+    "concurrently": "^3.6.1",
     "flow-bin": "^0.77.0",
     "immutable": "^3.8.2",
-    "jsdom": "^11.11.0",
+    "jsdom": "^11.12.0",
     "prettier": "^1.13.7",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",

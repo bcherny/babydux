@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { Subscription } from 'rxjs'
 import { StoreDefinition } from '../'
+import { Subscription } from '../emitter'
 import { Diff, equals, getDisplayName, keys, mapValues, some } from '../utils'
 
 export function connectAs<

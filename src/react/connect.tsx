@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { Subscription } from 'rxjs'
 import { Store, StoreDefinition, StoreSnapshot } from '../'
+import { Subscription } from '../emitter'
 import { Diff, equals, getDisplayName } from '../utils'
 
 export function connect<StoreState extends object>(store: StoreDefinition<StoreState>) {
