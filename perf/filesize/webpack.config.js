@@ -1,3 +1,4 @@
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 module.exports = {
@@ -28,5 +29,8 @@ module.exports = {
         sourceMap: false,
       }),
     ],
-  }
+  },
+  plugins: [
+    new BundleAnalyzerPlugin
+  ]
 }

@@ -28,6 +28,7 @@
     "test": "ava && flow focus-check ./test/test.flow.js && ./test/bad-cases/run.sh"
   },
   "dependencies": {
+    "rxjs-observable": "^0.0.5",
     "typed-rx-emitter": "1.2.0"
   },
   "devDependencies": {
@@ -50,6 +51,7 @@
     "typescript": "^3.0.3",
     "uglifyjs-webpack-plugin": "^1.3.0",
     "webpack": "^4.17.1",
+    "webpack-bundle-analyzer": "^2.13.1",
     "webpack-cli": "^3.1.0"
   },
   "peerDependencies": {

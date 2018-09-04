@@ -1,11 +1,12 @@
-import { Observable } from 'rxjs'
-import { Emitter } from 'typed-rx-emitter'
+import { Observable } from 'rxjs-observable'
+import { Emitter } from './Emitter'
 import { mapValues } from './utils'
 
-const CYCLE_ERROR_MESSAGE = '[undux] Error: Cyclical dependency detected. '
-  + 'This may cause a stack overflow unless you fix it. \n'
-  + 'The culprit is the following sequence of .set calls, '
-  + 'called from one or more of your Undux Effects: '
+const CYCLE_ERROR_MESSAGE =
+  '[undux] Error: Cyclical dependency detected. ' +
+  'This may cause a stack overflow unless you fix it. \n' +
+  'The culprit is the following sequence of .set calls, ' +
+  'called from one or more of your Undux Effects: '
 
 export type Undux<State extends object> = {
   [K in keyof State]: {
@@ -35,7 +36,7 @@ export class StoreSnapshot<State extends object> implements Store<State> {
   constructor(
     private state: State,
     private storeDefinition: StoreDefinition<State>
-  ) { }
+  ) {}
   get<K extends keyof State>(key: K) {
     return this.state[key]
   }
@@ -59,12 +60,13 @@ export class StoreSnapshot<State extends object> implements Store<State> {
  * reads from, so that we can improve performance by only subscribing
  * to those fields.
  */
-export class StoreSnapshotWrapper<State extends object> implements Store<State> {
+export class StoreSnapshotWrapper<State extends object>
+  implements Store<State> {
   constructor(
     private snapshot: StoreSnapshot<State>,
     private onGetOrSet: (key: keyof State) => void,
     private onGetAll: () => void
-  ) { }
+  ) {}
   get<K extends keyof State>(key: K) {
     this.onGetOrSet(key)
     return this.snapshot.get(key)
@@ -100,11 +102,8 @@ export class StoreDefinition<State extends object> implements Store<State> {
   private storeSnapshot: StoreSnapshot<State>
   private alls: Emitter<Undux<State>>
   private emitter: Emitter<State>
-  private setters: {
-    readonly [K in keyof State]: (value: State[K]) => void
-  }
+  private setters: { readonly [K in keyof State]: (value: State[K]) => void }
   constructor(state: State, options: Options) {
-
     let emitterOptions = {
       isDevMode: options.isDevMode,
       onCycle(chain: (string | number | symbol)[]) {
@@ -120,17 +119,15 @@ export class StoreDefinition<State extends object> implements Store<State> {
     this.storeSnapshot = new StoreSnapshot(state, this)
 
     // Cache setters
-    this.setters = mapValues(state, (v, key) =>
-      (value: typeof v) => {
-        let previousValue = this.storeSnapshot.get(key)
-        this.storeSnapshot = new StoreSnapshot(
-          Object.assign({}, this.storeSnapshot.getState(), { [key]: value }),
-          this
-        )
-        this.emitter.emit(key, value)
-        this.alls.emit(key, { key, previousValue, value })
-      }
-    )
+    this.setters = mapValues(state, (v, key) => (value: typeof v) => {
+      let previousValue = this.storeSnapshot.get(key)
+      this.storeSnapshot = new StoreSnapshot(
+        Object.assign({}, this.storeSnapshot.getState(), { [key]: value }),
+        this
+      )
+      this.emitter.emit(key, value)
+      this.alls.emit(key, { key, previousValue, value })
+    })
   }
   on<K extends keyof State>(key: K): Observable<State[K]> {
     return this.emitter.on(key)
@@ -165,19 +162,24 @@ export function createStore<State extends object>(
   return new StoreDefinition<State>(initialState, options)
 }
 
-export type Effects<State extends object> =
-  (store: StoreDefinition<State>) => StoreDefinition<State>
+export type Effects<State extends object> = (
+  store: StoreDefinition<State>
+) => StoreDefinition<State>
 
-export type EffectsAs<States extends {
-  [alias: string]: any
-}> = (stores: {[K in keyof States]: StoreDefinition<States[K]>}) =>
-  {[K in keyof States]: StoreDefinition<States[K]>}
+export type EffectsAs<
+  States extends {
+    [alias: string]: any
+  }
+> = (
+  stores: { [K in keyof States]: StoreDefinition<States[K]> }
+) => { [K in keyof States]: StoreDefinition<States[K]> }
 
 /**
  * @deprecated Use `Effects` instead.
  */
-export type Plugin<State extends object> =
-(store: StoreDefinition<State>) => StoreDefinition<State>
+export type Plugin<State extends object> = (
+  store: StoreDefinition<State>
+) => StoreDefinition<State>
 
 export * from './plugins/withLogger'
 export * from './plugins/withReduxDevtools'
